@@ -1,0 +1,34 @@
+.navbar {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 0px;
+    background-color: #ef5350;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  .navbar a {
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  .navbar a:hover {
+    filter: brightness(3);
+    background-color: #c62828;
+  }
+  .active {
+    background-color: #c62828;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+}
