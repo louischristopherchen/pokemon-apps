@@ -19,7 +19,7 @@
   "scripts": {
     "clean": "rm dist/bundle.js",
     "build-dev": "webpack --config ./webpack.config.js -d --mode development",
-    "dev": " webpack-dev-server --config ./webpack.config.js --mode development --host localhost --port 3000",
+    "dev": "webpack-dev-server --config ./webpack.config.js --mode development --host localhost --port 3000",
     "start": "webpack --config ./webpack.config.js -p --mode production",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

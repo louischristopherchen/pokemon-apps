@@ -62,6 +62,7 @@ module.exports = (env, argv) => {
       new Dotenv({ path: './.dev.env' })
     ];
   } else if (argv.mode === "production") {
+    config.devtool= 'cheap-module-source-map';
     config.mode = "production";
     config.plugins = [
       new webpack.HotModuleReplacementPlugin(),
