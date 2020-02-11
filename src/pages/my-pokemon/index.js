@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 import { setPath } from '../../actions';
 class MyPokemon extends Component {
   componentDidMount() {
-    const {setPath,match} = this.props
-    setPath(match)
+    const {setPath,match} = this.props;
+    setPath(match);
   }
   render() {
     return (

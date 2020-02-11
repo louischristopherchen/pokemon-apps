@@ -9,7 +9,7 @@ const Navbar = (props) => {
   const { navbar, active } = styles;
   return (
     <div className={navbar}>
-      <Link to="/pokemon" className={path && path === "/pokemon/:id?" ? active : ""}>Pokemon List</Link>
+      <Link to="/pokemons" className={path && path === "/pokemons/:offset?" ? active : ""}>Pokemon List</Link>
       <Link to="/my-pokemon" className={path && path === "/my-pokemon/:id?" ? active : ""}>My Pokemon</Link>
     </div>
   )

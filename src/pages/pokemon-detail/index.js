@@ -6,7 +6,6 @@ import {
 import { connect } from 'react-redux';
 import { setPath } from '../../actions';
 import urlSlice from '../../helper/urlSlice';
-import urlSliceDetail from '../../helper/urlSliceDetail';
 
 class MyPokemon extends Component {
   constructor() {
@@ -25,19 +24,19 @@ class MyPokemon extends Component {
     setPath(match);
     getData();
   }
-
   componentDidUpdate(prevProps) {
     const { getData } = this
     if (prevProps.match.url !== this.props.match.url) {
       this.setState({ dataStatus: 102 }, getData());
     }
   }
+
   getData() {
     const { POKEMON_URL } = process.env;
     const { match } = this.props
     var timestamp = new Date().getTime();
-    var _off_set = match && match.params && match.params.offset ? `?offset=${match.params.offset}&limit=20&t=${timestamp}` : `?t=${timestamp}`;
-    fetch(`${POKEMON_URL}${_off_set}`)
+    var _number = match && match.params && match.params.number ? `/${match.params.number}?t=${timestamp}` : `?t=${timestamp}`;
+    fetch(`${POKEMON_URL}${_number}`)
       .then(res => {
         if (res.ok) {
           return res.json();
@@ -46,13 +45,31 @@ class MyPokemon extends Component {
         }
       })
       .then(result => {
-        var count = result && result.count ? result.count : 0;
-        var next = result && result.next ? result.next : '';
-        var previous = result && result.previous ? result.previous : '';
-        var results = result && result.results ? result.results : [];
-        this.setState({
-          data: { count, next, previous, results }, dataStatus: 200
+        console.log(result)
+        var name = result && result.name?result.name:'';
+        var moves = result && result.moves?result.moves:[];
+        var types = result && result.types?result.types:[];
+        var sprites = result && result.sprites?result.sprites:'';
+         this.setState({
+          data: { name, moves, types, sprites }, dataStatus: 200
         })
+        /*
+        name
+        moves[move{name,url},version_group_details{level_learned_at,move_learn_method{name,url},version_group{name,url}}]
+        types[slot,type{name,url}]
+        sprites{
+        back_default
+        back_female
+        back_shiny
+        back_shiny_female
+        front_default
+        front_default_female
+        front_shiny
+        front_shiny_female}
+        */
+
+      
+       
       })
       .catch(err => {
         if (!err.status && err.message == 'Failed to fetch') {
@@ -71,22 +88,17 @@ class MyPokemon extends Component {
   render() {
     const { data, dataStatus } = this.state;
     const { disabledButton } = this
-    const { count, next, previous, results } = data;
-
-    var _next = next ? urlSlice(next) : '';
-    var _previous = previous ? urlSlice(previous) : '';
-    var _next_offset = _next && _next.offset ? _next.offset : '';
-    var _previous_offset = _previous && _previous.offset ? _previous.offset : '';
-    return (
+    const { name, moves, types, sprites } = data
+     return (
       <div>
-        {previous ? <Link to={`/pokemons/${_previous_offset}`} onClick={disabledButton}>prev</Link> : ''}
-        Pokemon List
-          {next ? <Link to={`/pokemons/${_next_offset}`} onClick={disabledButton}>next</Link> : ''}
-        {data && dataStatus == 200 && results? results.map((item, index) => {
-          
-          var _number = item && item.url ?urlSliceDetail(item.url):'';
-          return (<div key={index}> <Link to={`/pokemon/${_number}`}> {item.name}</Link></div>)
-        }) : (<div>Waiting</div>)}
+      Pokemon Detail
+     {data && dataStatus == 200 ? (
+     <div>
+       <img src={sprites.front_default||sprites.front_default_female}/>
+      <p/> {name}
+     </div>
+     ) : (<div>Waiting</div>)}
+        
 
       </div>
     );

@@ -7,8 +7,9 @@ import {
 } from 'react-router-dom';
 import MyPokemon   from './my-pokemon';
 import PokemonList from './pokemon-list';
+import PokemonDetail from './pokemon-detail';
 import { Navbar }  from '../components';
-const { container } = styles
+const { container } = styles;
 class App extends Component {
   render() {
     return (
@@ -16,10 +17,11 @@ class App extends Component {
         <Navbar/>
         <Switch>
           <Route exact path='/'>
-            <Redirect to="/pokemon"/>
+            <Redirect to="/pokemons"/>
           </Route>
-          <Route path="/pokemon/:id?"    component={PokemonList} />
-          <Route path="/my-pokemon/:id?" component={MyPokemon} />
+          <Route path="/pokemons/:offset?"    component={PokemonList} />
+          <Route path="/pokemon/:number"      component={PokemonDetail} />
+          <Route path="/my-pokemon/:id?"      component={MyPokemon} />
         </Switch>
         
        
