@@ -20,7 +20,7 @@
     "clean": "rm dist/bundle.js",
     "build-dev": "webpack --config ./webpack.config.js -d --mode development",
     "dev": "webpack-dev-server --config ./webpack.config.js --mode development --host localhost --port 3000",
-    "start": "webpack --config ./webpack.config.js -p --mode production",
+    "start": "webpack --config ./webpack.config.js --mode production",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -58,5 +58,9 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.3"
+  },
+  "engines": {
+    "node":"10.16.3",
+    "npm":"6.9.0"
   }
 }

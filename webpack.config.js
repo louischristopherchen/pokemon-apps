@@ -1,12 +1,12 @@
 const Dotenv = require('dotenv-webpack');
 const webpack = require('webpack');
+const path = require('path');
 
 var config = {
   devtool: 'eval-source-map',
   entry: ['./src/index.js'],
   output: {
-    path: __dirname + '/dist',
-    publicPath: '/',
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
   },
   module: {
