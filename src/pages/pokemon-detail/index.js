@@ -95,7 +95,8 @@ class MyPokemon extends Component {
      {data && dataStatus == 200 ? (
      <div>
        <img src={sprites.front_default||sprites.front_default_female}/>
-      <p/> {name}
+      <p style={{textTransform: 'capitalize'}}> {name}</p>
+
      </div>
      ) : (<div>Waiting</div>)}
         
