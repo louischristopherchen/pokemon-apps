@@ -22,7 +22,8 @@
     "dev": " webpack-dev-server --config ./webpack.config.dev.js --mode development --host localhost --port 3000",
     "build-prod": "webpack --config ./webpack.config.dev.js --p --mode production",
     "prod": " webpack-dev-server --config ./webpack.config.dev.js --mode production",
-    "start": "npm run build-prod & npm run prod",
+    "start": "webpack --config ./webpack.config.dev.js --p --mode production",
+    
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
