@@ -45,7 +45,6 @@ class MyPokemon extends Component {
         }
       })
       .then(result => {
-        console.log(result)
         var name = result && result.name?result.name:'';
         var moves = result && result.moves?result.moves:[];
         var types = result && result.types?result.types:[];
@@ -89,16 +88,39 @@ class MyPokemon extends Component {
     const { data, dataStatus } = this.state;
     const { disabledButton } = this
     const { name, moves, types, sprites } = data
+    console.log(moves)
+    console.log(types)
      return (
-      <div>
+      <div style={{display:'block',height:'90%'}}>
       Pokemon Detail
      {data && dataStatus == 200 ? (
      <div>
        <img src={sprites.front_default||sprites.front_default_female}/>
       <p style={{textTransform: 'capitalize'}}> {name}</p>
-
+      Types :
+      {types.map((item,index)=>{
+        return <p key={index}>{item.type.name}</p>
+      })}
+       Moves :
+       <table style={{width:'100%'}}>
+         <thead>
+         <tr>
+           <th> Name</th>
+         </tr>
+         </thead>
+        
+      <div style={{height:'60vh',width:'100%',overflowY:'scroll'}}>
+      {moves.map((item,index)=>{
+        return <div key={index}>
+          {item.move.name}
+          </div>
+      })}
+      </div>
+      </table>
      </div>
      ) : (<div>Waiting</div>)}
+
+     
         
 
       </div>
