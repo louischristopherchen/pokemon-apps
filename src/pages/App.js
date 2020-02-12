@@ -11,6 +11,7 @@ import PokemonDetail from './pokemon-detail';
 import { Navbar } from '../components';
 const { container, pages } = styles;
 class App extends Component {
+  
   render() {
     return (
       <div className={container}>

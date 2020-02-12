@@ -1,41 +1,59 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 // import styles from './index.module.css';
-import {
-  Link
-} from 'react-router-dom';
-import { connect } from 'react-redux';
-import { setPath } from '../../actions';
-import urlSlice from '../../helper/urlSlice';
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { setPath, getItem, setItem } from "../../actions";
+import urlSlice from "../../helper/urlSlice";
+import style from "./index.module.css";
+import myPokemon from "../../reducers/myPokemon";
 
+const { modal, active, modal_content } = style;
 class MyPokemon extends Component {
   constructor() {
     super();
     this.state = {
       data: '',
-      dataStatus: 102
-    }
+      dataStatus: 102,
+      modalPopUp: false,
+      nickname: '',
+      myPokemon: ''
+    };
     this.getData = this.getData.bind(this);
     this.disabledButton = this.disabledButton.bind(this);
+    this.catchPokemon = this.catchPokemon.bind(this);
+    this.onCloseModal = this.onCloseModal.bind(this);
+    this.onSave = this.onSave.bind(this);
+    this.onChangeValue = this.onChangeValue.bind(this)
+    this.goBack = this.goBack.bind(this)
   }
 
   componentDidMount() {
-    const { setPath, match } = this.props
-    const { getData } = this
+    const { setPath, match, getItem } = this.props;
+    const { getData } = this;
     setPath(match);
     getData();
+    getItem('myPokemon')
   }
+
   componentDidUpdate(prevProps) {
-    const { getData } = this
+    const { getData } = this;
     if (prevProps.match.url !== this.props.match.url) {
       this.setState({ dataStatus: 102 }, getData());
     }
   }
 
+  goBack() {
+    this.props.history.goBack();
+  }
+
   getData() {
     const { POKEMON_URL } = process.env;
-    const { match } = this.props
+    const { match } = this.props;
     var timestamp = new Date().getTime();
-    var _number = match && match.params && match.params.number ? `/${match.params.number}?t=${timestamp}` : `?t=${timestamp}`;
+    var _number =
+      match && match.params && match.params.number
+        ? `/${match.params.number}?t=${timestamp}`
+        : `?t=${timestamp}`;
     fetch(`${POKEMON_URL}${_number}`)
       .then(res => {
         if (res.ok) {
@@ -45,91 +63,120 @@ class MyPokemon extends Component {
         }
       })
       .then(result => {
-        var name = result && result.name?result.name:'';
-        var moves = result && result.moves?result.moves:[];
-        var types = result && result.types?result.types:[];
-        var sprites = result && result.sprites?result.sprites:'';
-         this.setState({
-          data: { name, moves, types, sprites }, dataStatus: 200
-        })
-        /*
-        name
-        moves[move{name,url},version_group_details{level_learned_at,move_learn_method{name,url},version_group{name,url}}]
-        types[slot,type{name,url}]
-        sprites{
-        back_default
-        back_female
-        back_shiny
-        back_shiny_female
-        front_default
-        front_default_female
-        front_shiny
-        front_shiny_female}
-        */
-
-      
-       
+        var name = result && result.name ? result.name : '';
+        var moves = result && result.moves ? result.moves : [];
+        var types = result && result.types ? result.types : [];
+        var sprites = result && result.sprites ? result.sprites : '';
+        this.setState({
+          data: { name, moves, types, sprites },
+          dataStatus: 200
+        });
       })
       .catch(err => {
-        if (!err.status && err.message == 'Failed to fetch') {
-          alert('check your connection')
+        if (!err.status && err.message == "Failed to fetch") {
+          alert("check your connection");
         } else {
-          alert(`status: ${err.status} & message: ${err.message}`)
+          alert(`status: ${err.status} & message: ${err.message}`);
         }
-      })
+      });
   }
 
   disabledButton(event) {
     const { dataStatus } = this.state;
-    dataStatus !== 200 && event.preventDefault()
+    dataStatus !== 200 && event.preventDefault();
+  }
+
+  catchPokemon() {
+    var chance = Math.floor(Math.random() * 2 + 1) - 1;
+    if (chance) {
+      this.setState({ modalPopUp: true });
+    }
+  }
+
+  onCloseModal(e) {
+    if (e.target.classList.contains(modal)) {
+      this.setState({ modalPopUp: false });
+    }
+  }
+
+  onSave() {
+    const { nickname, data } = this.state;
+    const { match, myPokemon, setItem } = this.props;
+    var _number =
+      match && match.params && match.params.number
+        ? match.params.number : '';
+    var _name = data && data.name ? data.name : '';
+    var _myPokemon = myPokemon ? myPokemon : {};
+    if (!_myPokemon[_number]) {
+      _myPokemon[_number] = {};
+      _myPokemon[_number].list = [];
+      _myPokemon[_number].name = _name;
+      _myPokemon[_number].list.push({ nickname });
+    } else {
+      _myPokemon[_number].list.push({ nickname });
+    }
+    this.setState({ nickname: '', modalPopUp: false }, setItem({ target: 'myPokemon', data: _myPokemon }), getItem('myPokemon'));
+  }
+
+  onChangeValue(value, target) {
+    this.setState({ [target]: value })
   }
 
   render() {
-    const { data, dataStatus } = this.state;
-    const { disabledButton } = this
-    const { name, moves, types, sprites } = data
-    console.log(moves)
-    console.log(types)
-     return (
-      <div style={{display:'block',height:'90%'}}>
-      Pokemon Detail
-     {data && dataStatus == 200 ? (
-     <div>
-       <img src={sprites.front_default||sprites.front_default_female}/>
-      <p style={{textTransform: 'capitalize'}}> {name}</p>
-      Types :
-      {types.map((item,index)=>{
-        return <p key={index}>{item.type.name}</p>
-      })}
-       Moves :
-       <table style={{width:'100%'}}>
-         <thead>
-         <tr>
-           <th> Name</th>
-         </tr>
-         </thead>
-        
-      <div style={{height:'60vh',width:'100%',overflowY:'scroll'}}>
-      {moves.map((item,index)=>{
-        return <div key={index}>
-          {item.move.name}
+    const { data, dataStatus, modalPopUp, nickname } = this.state;
+    const { disabledButton, catchPokemon, onCloseModal, onSave, onChangeValue,goBack } = this;
+    const { name, moves, types, sprites } = data;
+    return (
+      <div style={{ position: "relative" }}>
+        <button onClick={goBack}>Go Back</button>
+        Pokemon Detail
+        {data && dataStatus == 200 ? (
+          <div>
+            <img src={sprites.front_default || sprites.front_default_female} />
+            <p style={{ textTransform: "capitalize" }}> {name}</p>
+            <button onClick={catchPokemon}>Catch</button>
+            <p>Types :</p>
+            {types.map((item, index) => {
+              return <p key={index}>{item.type.name}</p>;
+            })}
+            Moves :
+            <div style={{ width: "100%" }}>
+              Name
+              <div
+                style={{ height: "50vh", width: "100%", overflowY: "scroll" }}
+              >
+                {moves.map((item, index) => {
+                  return <div key={index}>{item.move.name}</div>;
+                })}
+              </div>
+            </div>
           </div>
-      })}
-      </div>
-      </table>
-     </div>
-     ) : (<div>Waiting</div>)}
-
-     
-        
-
+        ) : (
+            <div>Waiting</div>
+          )}
+        <div
+          className={`${modal} ${modalPopUp ? active : ''}`}
+          onClick={onCloseModal}
+        >
+          <div className={modal_content}>
+            <h1>Congrats!!!</h1>
+            <input
+              type="text"
+              placeholder={'Give Your Pokemon Nickname'}
+              onChange={(event) => { (onChangeValue(event.target.value, 'nickname')) }}
+              value={nickname}
+            />
+            <button onClick={onSave}>Save</button>
+          </div>
+        </div>
       </div>
     );
     // }
-
   }
-
+}
+const mapStateToProp = (state) => {
+  const { myPokemon } = state
+  return { myPokemon }
 }
 
-
-export default connect(null, { setPath })(MyPokemon);
+export default connect(mapStateToProp, { setPath, getItem, setItem })(MyPokemon);

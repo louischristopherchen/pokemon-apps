@@ -1,2 +1,3 @@
 import { setPath } from './setPath';
-export { setPath };
+import { getItem, setItem } from './localStorage';
+export { setPath, getItem, setItem };
