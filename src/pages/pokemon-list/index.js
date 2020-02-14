@@ -1,11 +1,20 @@
 import React, { Component } from "react";
-// import styles from './index.module.css';
+import styles from "./index.module.css";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { setPath, getItem } from "../../actions";
 import urlSlice from "../../helper/urlSlice";
 import urlSliceDetail from "../../helper/urlSliceDetail";
+import { Titlebar } from "../../components";
 
+const {
+  link_list,
+  content_list,
+  container,
+  prev_next_button,
+  prev_button,
+  next_button
+} = styles;
 class MyPokemon extends Component {
   constructor() {
     super();
@@ -21,9 +30,8 @@ class MyPokemon extends Component {
     const { setPath, match, getItem } = this.props;
     const { getData } = this;
     setPath(match);
-    getItem('myPokemon');
+    getItem("myPokemon");
     getData();
-
   }
 
   componentDidUpdate(prevProps) {
@@ -74,7 +82,7 @@ class MyPokemon extends Component {
 
   render() {
     const { data, dataStatus } = this.state;
-    const { myPokemon } = this.props
+    const { myPokemon } = this.props;
     const { disabledButton } = this;
     const { count, next, previous, results } = data;
 
@@ -84,43 +92,62 @@ class MyPokemon extends Component {
     var _previous_offset =
       _previous && _previous.offset ? _previous.offset : "";
     return (
-      <div>
-        {previous ? (
-          <Link to={`/pokemons/${_previous_offset}`} onClick={disabledButton}>
-            prev
-          </Link>
-        ) : (
-            ""
-          )}
-        Pokemon List
-        {next ? (
-          <Link to={`/pokemons/${_next_offset}`} onClick={disabledButton}>
-            next
-          </Link>
-        ) : (
-            ""
-          )}
+      <div className={container}>
+        <Titlebar title={"Pokemon List"} />
         {data && dataStatus == 200 && results ? (
-          results.map((item, index) => {
-            var _number = item && item.url ? urlSliceDetail(item.url) : "";
-            var _owned = myPokemon && myPokemon[_number]?`Owned ${myPokemon[_number].list.length}`:'';
-            return (
-              <div key={index}>
-                <Link to={`/pokemon/${_number}`}> {item.name} </Link>
-                {_owned}
-              </div>
-            );
-          })
+          <div className={content_list}>
+            {results.map((item, index) => {
+              var _number = item && item.url ? urlSliceDetail(item.url) : "";
+              var _owned =
+                myPokemon && myPokemon[_number]
+                  ? `(has ${myPokemon[_number].list.length})`
+                  : "";
+              return (
+                <Link
+                  key={index}
+                  to={`/pokemon/${_number}`}
+                  className={link_list}
+                >
+                  {" "}
+                  {item.name} {_owned}{" "}
+                </Link>
+              );
+            })}
+          </div>
         ) : (
-            <div>Waiting</div>
+          <div>Waiting</div>
+        )}
+        <div className={prev_next_button}>
+          {previous ? (
+            <Link
+              to={`/pokemons/${_previous_offset}`}
+              onClick={disabledButton}
+              className={prev_button}
+            >
+              {"<<"}prev
+            </Link>
+          ) : (
+            ""
           )}
+          {next ? (
+            <Link
+              to={`/pokemons/${_next_offset}`}
+              onClick={disabledButton}
+              className={next_button}
+            >
+              next{">>"}
+            </Link>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
     );
   }
 }
 
-const mapStateToProp = (state) => {
-  const { myPokemon } = state
-  return { myPokemon }
-}
+const mapStateToProp = state => {
+  const { myPokemon } = state;
+  return { myPokemon };
+};
 export default connect(mapStateToProp, { setPath, getItem })(MyPokemon);

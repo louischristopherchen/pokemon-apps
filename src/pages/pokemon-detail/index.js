@@ -1,30 +1,33 @@
 import React, { Component } from "react";
-// import styles from './index.module.css';
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { setPath, getItem, setItem } from "../../actions";
-import urlSlice from "../../helper/urlSlice";
 import style from "./index.module.css";
-import myPokemon from "../../reducers/myPokemon";
+import { Titlebar, Modal } from "../../components";
 
-const { modal, active, modal_content } = style;
+const {
+  back_button,
+  container,
+  content,
+  move_list,
+  move_content,
+  move_item
+} = style;
 class MyPokemon extends Component {
   constructor() {
     super();
     this.state = {
-      data: '',
+      data: "",
       dataStatus: 102,
       modalPopUp: false,
-      nickname: '',
-      myPokemon: ''
+      nickname: "",
+      myPokemon: ""
     };
     this.getData = this.getData.bind(this);
-    this.disabledButton = this.disabledButton.bind(this);
     this.catchPokemon = this.catchPokemon.bind(this);
     this.onCloseModal = this.onCloseModal.bind(this);
     this.onSave = this.onSave.bind(this);
-    this.onChangeValue = this.onChangeValue.bind(this)
-    this.goBack = this.goBack.bind(this)
+    this.onChangeValue = this.onChangeValue.bind(this);
+    this.goBack = this.goBack.bind(this);
   }
 
   componentDidMount() {
@@ -32,7 +35,7 @@ class MyPokemon extends Component {
     const { getData } = this;
     setPath(match);
     getData();
-    getItem('myPokemon')
+    getItem("myPokemon");
   }
 
   componentDidUpdate(prevProps) {
@@ -63,10 +66,10 @@ class MyPokemon extends Component {
         }
       })
       .then(result => {
-        var name = result && result.name ? result.name : '';
+        var name = result && result.name ? result.name : "";
         var moves = result && result.moves ? result.moves : [];
         var types = result && result.types ? result.types : [];
-        var sprites = result && result.sprites ? result.sprites : '';
+        var sprites = result && result.sprites ? result.sprites : "";
         this.setState({
           data: { name, moves, types, sprites },
           dataStatus: 200
@@ -81,11 +84,6 @@ class MyPokemon extends Component {
       });
   }
 
-  disabledButton(event) {
-    const { dataStatus } = this.state;
-    dataStatus !== 200 && event.preventDefault();
-  }
-
   catchPokemon() {
     var chance = Math.floor(Math.random() * 2 + 1) - 1;
     if (chance) {
@@ -93,19 +91,16 @@ class MyPokemon extends Component {
     }
   }
 
-  onCloseModal(e) {
-    if (e.target.classList.contains(modal)) {
-      this.setState({ modalPopUp: false });
-    }
+  onCloseModal() {
+    this.setState({ modalPopUp: false });
   }
 
   onSave() {
     const { nickname, data } = this.state;
     const { match, myPokemon, setItem } = this.props;
     var _number =
-      match && match.params && match.params.number
-        ? match.params.number : '';
-    var _name = data && data.name ? data.name : '';
+      match && match.params && match.params.number ? match.params.number : "";
+    var _name = data && data.name ? data.name : "";
     var _myPokemon = myPokemon ? myPokemon : {};
     if (!_myPokemon[_number]) {
       _myPokemon[_number] = {};
@@ -115,38 +110,54 @@ class MyPokemon extends Component {
     } else {
       _myPokemon[_number].list.push({ nickname });
     }
-    this.setState({ nickname: '', modalPopUp: false }, setItem({ target: 'myPokemon', data: _myPokemon }), getItem('myPokemon'));
+    this.setState(
+      { nickname: "", modalPopUp: false },
+      setItem({ target: "myPokemon", data: _myPokemon }),
+      getItem("myPokemon")
+    );
   }
 
   onChangeValue(value, target) {
-    this.setState({ [target]: value })
+    this.setState({ [target]: value });
   }
 
   render() {
     const { data, dataStatus, modalPopUp, nickname } = this.state;
-    const { disabledButton, catchPokemon, onCloseModal, onSave, onChangeValue,goBack } = this;
+    const { catchPokemon, onCloseModal, onSave, onChangeValue, goBack } = this;
     const { name, moves, types, sprites } = data;
     return (
-      <div style={{ position: "relative" }}>
-        <button onClick={goBack}>Go Back</button>
-        Pokemon Detail
+      <div className={container}>
+        <Titlebar title={"Pokemon Detail"} />
+        <button onClick={goBack} className={back_button}>
+          Go Back
+        </button>
+
         {data && dataStatus == 200 ? (
-          <div>
-            <img src={sprites.front_default || sprites.front_default_female} />
-            <p style={{ textTransform: "capitalize" }}> {name}</p>
+          <div className={content}>
+            {/* <div style={{position:'relative'}}> */}
+            <div style={{ verticalAlign: 'middle', display: 'inline' }}>
+              {" "}
+              <img
+                src={sprites.front_default || sprites.front_default_female}
+              />
+            </div>
+            <div style={{ display: "inline" }}> {name}</div>
             <button onClick={catchPokemon}>Catch</button>
-            <p>Types :</p>
-            {types.map((item, index) => {
-              return <p key={index}>{item.type.name}</p>;
-            })}
+            <div>
+              {types.map((item, index) => {
+                return <span key={index}>{item.type.name}</span>;
+              })}
+            </div>
+            {/* </div> */}
             Moves :
-            <div style={{ width: "100%" }}>
-              Name
-              <div
-                style={{ height: "50vh", width: "100%", overflowY: "scroll" }}
-              >
+            <div className={move_content}>
+              <div className={move_list}>
                 {moves.map((item, index) => {
-                  return <div key={index}>{item.move.name}</div>;
+                  return (
+                    <div className={move_item} key={index}>
+                      {item.move.name}
+                    </div>
+                  );
                 })}
               </div>
             </div>
@@ -154,29 +165,30 @@ class MyPokemon extends Component {
         ) : (
             <div>Waiting</div>
           )}
-        <div
-          className={`${modal} ${modalPopUp ? active : ''}`}
-          onClick={onCloseModal}
-        >
-          <div className={modal_content}>
-            <h1>Congrats!!!</h1>
-            <input
-              type="text"
-              placeholder={'Give Your Pokemon Nickname'}
-              onChange={(event) => { (onChangeValue(event.target.value, 'nickname')) }}
-              value={nickname}
-            />
-            <button onClick={onSave}>Save</button>
-          </div>
-        </div>
+        <Modal isOpen={modalPopUp} onCloseModal={onCloseModal}>
+          <h1>Congrats!!!</h1>
+          <input
+            style={{ margin: "5px 0px" }}
+            type="text"
+            placeholder={"Give Your Pokemon Nickname"}
+            onChange={event => {
+              onChangeValue(event.target.value, "nickname");
+            }}
+            value={nickname}
+          />
+          <button onClick={onSave}>Save</button>
+        </Modal>
+
       </div>
     );
-    // }
+
   }
 }
-const mapStateToProp = (state) => {
-  const { myPokemon } = state
-  return { myPokemon }
-}
+const mapStateToProp = state => {
+  const { myPokemon } = state;
+  return { myPokemon };
+};
 
-export default connect(mapStateToProp, { setPath, getItem, setItem })(MyPokemon);
+export default connect(mapStateToProp, { setPath, getItem, setItem })(
+  MyPokemon
+);
