@@ -134,22 +134,25 @@ class MyPokemon extends Component {
 
         {data && dataStatus == 200 ? (
           <div className={content}>
-            {/* <div style={{position:'relative'}}> */}
-            <div style={{ verticalAlign: 'middle', display: 'inline' }}>
-              {" "}
+            {/* menu atas */}
+            <div >
               <img
                 src={sprites.front_default || sprites.front_default_female}
               />
             </div>
-            <div style={{ display: "inline" }}> {name}</div>
-            <button onClick={catchPokemon}>Catch</button>
-            <div>
+            <div
+              style={{ display: 'inline', height: '100%' }}
+            >
               {types.map((item, index) => {
                 return <span key={index}>{item.type.name}</span>;
               })}
+              {name}
+              <button onClick={catchPokemon}>Catch</button>
             </div>
-            {/* </div> */}
-            Moves :
+            {/*  */}
+            <div>
+              Moves :
+            </div>
             <div className={move_content}>
               <div className={move_list}>
                 {moves.map((item, index) => {
