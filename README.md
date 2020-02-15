@@ -18,6 +18,7 @@
 - React-router-dom
 - Redux
 - Express
+- CSS Module
 
 ## Utility
 - Webpack
