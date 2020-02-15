@@ -1,17 +1,25 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setPath, getItem, setItem } from "../../actions";
-import style from "./index.module.css";
+import styles from "./index.module.css";
 import { Titlebar, Modal } from "../../components";
 
 const {
+  top_content,
+  top_right_content,
+  type_content,
+  type_item,
   back_button,
+  catch_button,
   container,
   content,
   move_list,
   move_content,
-  move_item
-} = style;
+  move_item,
+  pokemon_name,
+  pokemon_image,
+  pokemon_moves,m_5_0
+} = styles;
 class MyPokemon extends Component {
   constructor() {
     super();
@@ -134,23 +142,27 @@ class MyPokemon extends Component {
 
         {data && dataStatus == 200 ? (
           <div className={content}>
-            {/* menu atas */}
-            <div >
-              <img
-                src={sprites.front_default || sprites.front_default_female}
-              />
+            <div className={top_content}>
+              <div  >
+                <img className={pokemon_image} 
+                  src={sprites.front_default || sprites.front_default_female}
+                />
+              </div>
+              <div className={top_right_content}>
+                <div className={type_content}>
+                  {types.map((item, index) => {
+                    return <div className={type_item} key={index}>{item.type.name}</div>;
+                  })}
+                </div>
+                <div className={pokemon_name}>
+                  {name}
+                </div>
+                <div>
+                  <button onClick={catchPokemon} className={catch_button} >CATCH</button>
+                </div>
+              </div>
             </div>
-            <div
-              style={{ display: 'inline', height: '100%' }}
-            >
-              {types.map((item, index) => {
-                return <span key={index}>{item.type.name}</span>;
-              })}
-              {name}
-              <button onClick={catchPokemon}>Catch</button>
-            </div>
-            {/*  */}
-            <div>
+            <div className={pokemon_moves}>
               Moves :
             </div>
             <div className={move_content}>
@@ -166,12 +178,12 @@ class MyPokemon extends Component {
             </div>
           </div>
         ) : (
-            <div>Waiting</div>
+            <div>Please Wait...</div>
           )}
         <Modal isOpen={modalPopUp} onCloseModal={onCloseModal}>
           <h1>Congrats!!!</h1>
           <input
-            style={{ margin: "5px 0px" }}
+            className={m_5_0}
             type="text"
             placeholder={"Give Your Pokemon Nickname"}
             onChange={event => {

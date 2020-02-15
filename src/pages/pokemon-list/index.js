@@ -115,7 +115,7 @@ class MyPokemon extends Component {
             })}
           </div>
         ) : (
-          <div>Waiting</div>
+          <div>Please Wait...</div>
         )}
         <div className={prev_next_button}>
           {previous ? (

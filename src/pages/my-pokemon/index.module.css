@@ -1,2 +1,55 @@
+.container {
+  padding: 0px 20px;
+}
 
+.pokemon_name{
+  font-size: 14px;
+  text-decoration: none;
+  text-transform: capitalize;
+  color:#c62828;
+}
+
+.pokemon_name:hover{
+  filter: brightness(3);
+}
+.table_outside{
+  width: 90%;
+  margin-top: 20px;
+  border-collapse:collapse ;
+}
+
+.table_outside td {
+  border:1px dotted #ef5350;
+}
+
+.table_outside thead tr td{
+  font-weight: bold;
+  font-size: 16px;
+  color:#ef5350;
+  
+}
+
+.table_outside tbody tr td {
+  font-weight: 10px;
+}
+
+.table_inside{
+  width:100%
+}
+
+.table_content{
+  font-size: 14px;
+}
+
+.release_pokemon{
+  border:none;
+  background:none;
+  float: right;
+  color: #ef5350;
+}
+
+.release_pokemon:hover{
+  filter: brightness(2);
+  cursor: pointer;
+}
 @media screen and (max-width: 600px) {}

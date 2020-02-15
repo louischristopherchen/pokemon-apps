@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-// import styles from './index.module.css';
+import styles from './index.module.css';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { setPath, getItem, setItem } from "../../actions";
 import { Titlebar } from "../../components";
 
+const { table_outside, table_content, table_inside, container, release_pokemon, pokemon_name } = styles
 class MyPokemon extends Component {
   constructor() {
     super();
@@ -17,17 +18,20 @@ class MyPokemon extends Component {
     getItem("myPokemon");
   }
 
-  onRelease(pokemon, nickname) {
-    const { myPokemon, setItem, getItem } = this.props;
-    var _myPokemon = myPokemon ? myPokemon : "";
+  onRelease(pokemon, index_nickname,nickname) {
+    var _confirm = confirm(`Are you sure release ${nickname}?`);
+    if (_confirm) {
+      const { myPokemon, setItem, getItem } = this.props;
+      var _myPokemon = myPokemon ? myPokemon : "";
 
-    if (_myPokemon[pokemon].list.length == 1) {
-      delete _myPokemon[pokemon];
-    } else {
-      _myPokemon[pokemon].list.splice(nickname, 1);
+      if (_myPokemon[pokemon].list.length == 1) {
+        delete _myPokemon[pokemon];
+      } else {
+        _myPokemon[pokemon].list.splice(index_nickname, 1);
+      }
+      setItem({ target: "myPokemon", data: _myPokemon });
+      getItem("myPokemon");
     }
-    setItem({ target: "myPokemon", data: _myPokemon });
-    getItem("myPokemon");
   }
 
   render() {
@@ -36,19 +40,18 @@ class MyPokemon extends Component {
     var temp = [];
     for (let i in myPokemon) {
       temp.push(
-
-        <tbody key={i}>
+        <tbody key={i} className={table_content}>
           <tr>
-            <td ><Link to={`/pokemon/${i}`}>{myPokemon[i].name}</Link></td>
+            <td  ><Link to={`/pokemon/${i}`} className={pokemon_name}>{myPokemon[i].name}</Link></td>
             <td>
-              <table style={{ width: '100%' }}>
+              <table className={table_inside}>
                 <tbody>
                   {myPokemon[i].list.map((item, index) => {
                     return (
                       <tr key={index}>
                         <td >
                           {item.nickname}
-                          <button style={{ float: 'right' }} onClick={() => onRelease(i, index)}>Release</button>
+                          <button className={release_pokemon} onClick={() => onRelease(i, index,item.nickname)}>X</button>
                         </td>
                       </tr>
                     );
@@ -65,11 +68,17 @@ class MyPokemon extends Component {
     }
 
     return (
-      <div>
+      <div className={container}>
         <Titlebar title={"My Pokemon"} />
-        <table border="1">
+        {temp.length!==0?<table className={table_outside}>
+          <thead>
+            <tr>
+              <td> Pokemon</td>
+              <td> Nickname</td>
+            </tr>
+          </thead>
           {temp}
-        </table>
+        </table>:'You Dont Have Pokemon List in Your Pocket, Go Catch Pokemon'}
       </div>
     );
   }
