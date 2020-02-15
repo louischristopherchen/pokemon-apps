@@ -27,3 +27,7 @@
 
 ## Middleware
 - Redux Thunk
+
+
+### Apps Link
+[Click here](https://pokemon-apps.herokuapp.com/)
